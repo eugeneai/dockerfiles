@@ -3,7 +3,7 @@
 RUNIT=../runit-services/etc/sv
 IMAGE=ssh-server
 
-all: copy docker clean
+all: copy docker
 
 copy: $(RUNIT)/sshd/run
 	mkdir sshd

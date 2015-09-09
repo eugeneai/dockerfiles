@@ -23,7 +23,10 @@ sed -i -e 's/#UseDNS.*/UseDNS no/' /etc/ssh/sshd_config
 #RUN rm -rf /etc/update-motd.d /etc/motd /etc/motd.dynamic 
 #RUN ln -fs /dev/null /run/motd.dynamic
 
-## Clean up
-#WORKDIR /
 
+WORKDIR /
+mv /build/sshd /services
+
+## Clean up
 pacman -Scc --noconfirm
+rm -rf /build
