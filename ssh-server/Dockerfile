@@ -3,11 +3,10 @@ FROM eugeneai/archlinux
 MAINTAINER Evgeny Cherkashin <eugeneai@irnok.net>
 ENV HOME /root
 
-ADD . /build
-#ADD ../runit-services/etc/sv/sshd/ /build/etc/sv/sshd/
-
 RUN pacman -Sy openssh --needed --noconfirm
+RUN pacman -S procps iproute2 net-tools --needed --noconfirm
 
+ADD . /build
 RUN sh /build/setup.sh
 
 ## Expose ports.

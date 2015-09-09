@@ -24,8 +24,8 @@ sed -i -e 's/#UseDNS.*/UseDNS no/' /etc/ssh/sshd_config
 #RUN ln -fs /dev/null /run/motd.dynamic
 
 
-WORKDIR /
 mv /build/sshd /services
+rm -rf /services/sshd/log/run
 
 ## Clean up
 pacman -Scc --noconfirm
