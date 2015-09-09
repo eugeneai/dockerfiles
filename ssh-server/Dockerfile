@@ -7,6 +7,7 @@ RUN pacman -Sy openssh --needed --noconfirm
 RUN pacman -S procps iproute2 net-tools --needed --noconfirm
 
 ADD . /build
+ADD ./services /services
 RUN sh /build/setup.sh
 
 ## Expose ports.
