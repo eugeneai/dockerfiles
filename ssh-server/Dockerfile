@@ -1,5 +1,5 @@
-## Standard phusion part
-FROM eugeneai/archlinux
+## Standard kampka originated archlinux distro
+FROM eugeneai/debug
 MAINTAINER Evgeny Cherkashin <eugeneai@irnok.net>
 ENV HOME /root
 
