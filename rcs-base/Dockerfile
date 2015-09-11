@@ -22,6 +22,7 @@ ADD ./etc /etc
 ADD ./srv /srv
 RUN echo "Include conf/httpd-local.conf" >> /etc/httpd/conf/httpd.conf
 RUN sed -i -e 's/^\(.*mpm_event_module.*\)$/#\1/' /etc/httpd/conf/httpd.conf
+RUN mkdir /run/httpd && chown http:http /run/httpd
 
 
 VOLUME ["/git", "/bzr", "/svn"]

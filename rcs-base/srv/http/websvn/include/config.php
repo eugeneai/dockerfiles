@@ -12,4 +12,4 @@ $config->useGeshi();
 
 $config->expandTabsBy(8);
 
-$config->addRepository('ISDCT SVN repo', 'file:///svn/SVN');
+$config->addRepository('An SVN repo', 'file:///svn/SVN');
