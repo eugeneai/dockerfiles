@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Generate a minimal filesystem for archlinux and load it into the local
-# docker as "archlinux"
+# docker as "archlinux-base"
 # requires root
 export LC_ALL=C
 export LANG=C
@@ -8,49 +8,106 @@ set -e
 set -o xtrace
 
 hash pacstrap &>/dev/null || {
-	echo "Could not find pacstrap. Run pacman -S arch-install-scripts"
-	exit 1
+    echo "Could not find pacstrap. Run pacman -S arch-install-scripts"
+    exit 1
 }
 
 hash expect &>/dev/null || {
-	echo "Could not find expect. Run pacman -S expect"
-	exit 1
+    echo "Could not find expect. Run pacman -S expect"
+    exit 1
 }
+
+
+export LANG="C.UTF-8"
 
 ROOTFS=$(mktemp -d ${TMPDIR:-/var/tmp}/rootfs-archlinux-XXXXXXXXXX)
 chmod 755 $ROOTFS
 
 # packages to ignore for space savings
-PKGIGNORE=linux,jfsutils,lvm2,cryptsetup,groff,man-db,man-pages,mdadm,pciutils,pcmciautils,reiserfsprogs,s-nail,xfsprogs
+PKGIGNORE=(
+    cryptsetup
+    device-mapper
+    dhcpcd
+    iproute2
+    jfsutils
+    linux
+    lvm2
+    man-db
+    man-pages
+    mdadm
+    nano
+    netctl
+    openresolv
+    pciutils
+    pcmciautils
+    reiserfsprogs
+    s-nail
+    systemd-sysvcompat
+    usbutils
+    vi
+    xfsprogs
+    pages
+    s-nail
+    groff
+)
+IFS=','
+PKGIGNORE="${PKGIGNORE[*]}"
+unset IFS
+
+arch="$(uname -m)"
+case "$arch" in
+    armv*)
+	if pacman -Q archlinuxarm-keyring >/dev/null 2>&1; then
+	    pacman-key --init
+	    pacman-key --populate archlinuxarm
+	else
+	    echo "Could not find archlinuxarm-keyring. Please, install it and run pacman-key --populate archlinuxarm"
+	    exit 1
+	fi
+	PACMAN_CONF=$(mktemp ${TMPDIR:-/var/tmp}/pacman-conf-archlinux-XXXXXXXXX)
+	version="$(echo $arch | cut -c 5)"
+	sed "s/Architecture = armv/Architecture = armv${version}h/g" './mkimage-archarm-pacman.conf' > "${PACMAN_CONF}"
+	PACMAN_MIRRORLIST='Server = http://mirror.archlinuxarm.org/$arch/$repo'
+	PACMAN_EXTRA_PKGS='archlinuxarm-keyring'
+	EXPECT_TIMEOUT=1800 # Most armv* based devices can be very slow (e.g. RPiv1)
+	ARCH_KEYRING=archlinuxarm
+	DOCKER_IMAGE_NAME="armv${version}h/archlinux-base"
+	;;
+    *)
+	PACMAN_CONF='./mkimage-arch-pacman.conf'
+	PACMAN_MIRRORLIST='Server = https://mirrors.kernel.org/archlinux/$repo/os/$arch'
+	PACMAN_EXTRA_PKGS='haveged yaourt'
+	EXPECT_TIMEOUT=60
+	ARCH_KEYRING=archlinux
+	DOCKER_IMAGE_NAME="eugeneai/archlinux-base"
+	;;
+esac
+
+export PACMAN_MIRRORLIST
 
 expect <<EOF
-	set send_slow {1 .1}
-	proc send {ignore arg} {
-		sleep .1
-		exp_send -s -- \$arg
-	}
-	set timeout 60
-
-	spawn pacstrap -C ./mkimage-arch-pacman.conf -c -d -G -i $ROOTFS base haveged yaourt --ignore $PKGIGNORE
-	expect {
-		-exact "anyway? \[Y/n\] " { send -- "n\r"; exp_continue }
-		-exact "(default=all): " { send -- "\r"; exp_continue }
-		-exact "installation? \[Y/n\]" { send -- "y\r"; exp_continue }
-	}
+    set send_slow {1 .1}
+    proc send {ignore arg} {
+	sleep .1
+	exp_send -s -- \$arg
+    }
+    set timeout $EXPECT_TIMEOUT
+    spawn pacstrap -C $PACMAN_CONF -c -d -G -i $ROOTFS base haveged $PACMAN_EXTRA_PKGS --ignore $PKGIGNORE
+    expect {
+	-exact "anyway? \[Y/n\] " { send -- "n\r"; exp_continue }
+	-exact "(default=all): " { send -- "\r"; exp_continue }
+	-exact "installation? \[Y/n\]" { send -- "y\r"; exp_continue }
+	-exact "delete it? \[Y/n\]" { send -- "y\r"; exp_continue }
+    }
 EOF
 
-mv $ROOTFS/etc/pacman.conf{,.orig}
-cp ./mkimage-arch-pacman.conf $ROOTFS/etc/pacman.conf
-
-arch-chroot $ROOTFS /bin/sh -c "haveged -w 1024; pacman-key --init; pkill haveged; pacman -Rs --noconfirm haveged; pacman-key --populate archlinux"
-arch-chroot $ROOTFS /bin/sh -c "ln -s /usr/share/zoneinfo/UTC /etc/localtime"
+arch-chroot $ROOTFS /bin/sh -c 'rm -r /usr/share/man/*'
+arch-chroot $ROOTFS /bin/sh -c "haveged -w 1024; pacman-key --init; pkill haveged; pacman -Rs --noconfirm haveged; pacman-key --populate $ARCH_KEYRING; pkill gpg-agent"
+arch-chroot $ROOTFS /bin/sh -c "ln -sf /usr/share/zoneinfo/asia/Irkutsk /etc/localtime"
 echo 'en_US.UTF-8 UTF-8' > $ROOTFS/etc/locale.gen
-# eugeneai: Russian Locale Setup
 echo 'ru_RU.UTF-8 UTF-8' >> $ROOTFS/etc/locale.gen
 arch-chroot $ROOTFS locale-gen
-# eugeneai: Irkutsk Time Zone
-arch-chroot $ROOTFS ln -sf /usr/share/zoneinfo/Asia/Irkutsk /etc/localtime
-arch-chroot $ROOTFS /bin/sh -c 'echo "Server = https://mirrors.kernel.org/archlinux/\$repo/os/\$arch" > /etc/pacman.d/mirrorlist'
+arch-chroot $ROOTFS /bin/sh -c 'echo $PACMAN_MIRRORLIST > /etc/pacman.d/mirrorlist'
 
 # udev doesn't work in containers, rebuild /dev
 DEV=$ROOTFS/dev
@@ -70,6 +127,6 @@ mknod -m 600 $DEV/initctl p
 mknod -m 666 $DEV/ptmx c 5 2
 ln -sf /proc/self/fd $DEV/fd
 
-tar --numeric-owner --xattrs --acls -C $ROOTFS -c . | docker import - eugeneai/archlinux
-docker run -i -t eugeneai/archlinux-base echo Success.
+tar --numeric-owner --xattrs --acls -C $ROOTFS -c . | docker import - $DOCKER_IMAGE_NAME
+docker run --rm -t $DOCKER_IMAGE_NAME echo Success.
 rm -rf $ROOTFS
