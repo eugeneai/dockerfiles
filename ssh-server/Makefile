@@ -7,7 +7,7 @@ all: copy docker clean
 
 copy: $(RUNIT)/sshd/run
 	mkdir -p ./services
-	cp -r $(RUNIT)/sshd/ ./services/ 
+	cp -rf $(RUNIT)/sshd/ ./services/ 
 	rm -rf ./services/sshd/{log,supervise}
 	
 docker: Dockerfile setup.sh

@@ -1,6 +1,6 @@
 ## Standard kampka originated archlinux distro
-#FROM eugeneai/debug
-FROM eugeneai/archlinux
+FROM eugeneai/debug
+#FROM eugeneai/archlinux
 MAINTAINER Evgeny Cherkashin <eugeneai@irnok.net>
 ENV HOME /root
 
