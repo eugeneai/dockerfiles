@@ -3,7 +3,7 @@
 export TERM=xterm 
 #git clone https://github.com/yyuu/pyenv.git .pyenv
 
-yaourt -S pyenv-git --noconfirm --needed
+yaourt -S pyenv --noconfirm --needed
 
 echo 'export TERM=xterm' >> ~/.bash_profile
 
