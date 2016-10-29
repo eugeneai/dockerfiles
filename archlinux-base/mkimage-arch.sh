@@ -5,6 +5,7 @@
 export LC_ALL=C
 export LANG=C
 set -e
+set -o xtrace
 
 hash pacstrap &>/dev/null || {
 	echo "Could not find pacstrap. Run pacman -S arch-install-scripts"
@@ -70,5 +71,5 @@ mknod -m 666 $DEV/ptmx c 5 2
 ln -sf /proc/self/fd $DEV/fd
 
 tar --numeric-owner --xattrs --acls -C $ROOTFS -c . | docker import - eugeneai/archlinux
-docker run -i -t eugeneai/archlinux echo Success.
+docker run -i -t eugeneai/archlinux-base echo Success.
 rm -rf $ROOTFS
