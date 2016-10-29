@@ -5,9 +5,9 @@ export TERM=xterm
 
 yaourt -S pyenv --noconfirm --needed
 
-echo 'export TERM=xterm' >> ~/.bash_profile
+echo 'export TERM=xterm' >> $HOME/.bash_profile
 
 pyenv init
-git clone https://github.com/yyuu/pyenv-virtualenv.git ~/.pyenv/plugins/pyenv-virtualenv
+git clone https://github.com/yyuu/pyenv-virtualenv.git $HOME/.pyenv/plugins/pyenv-virtualenv
 
 # exec "$SHELL"

@@ -1,12 +1,13 @@
-.PHONY: all docker copy
+.PHONY: all docker copy down
 
 RUNIT=../runit-services/etc/sv
-IMAGE=python-pyenv
+IMAGENAME=python-pyenv
+IMAGE="eugeneai/$(IMAGENAME)"
 
 all: docker
 
 docker: Dockerfile
-	docker build -t "eugeneai/$(IMAGE)" .
+	docker build -t $(IMAGE) .
 	
 #copy: $(RUNIT)/apache2/run
 #	mkdir -p ./services
@@ -14,4 +15,7 @@ docker: Dockerfile
 #	rm -rf ./services/apache2/{log,supervise}
 	
 clean:
-	rm -rf ./services
+	# rm -rf ./services
+	
+down:
+	docker rmi -f $(IMAGE)

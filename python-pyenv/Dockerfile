@@ -5,10 +5,13 @@ WORKDIR /root
 ADD ./setup-user.sh ./
 RUN ./setup-user.sh
 
-USER python
-WORKDIR /home/python
+ENV HOME /home/python
+WORKDIR ${HOME}
 ADD ./.bash_profile ./
 ADD ./setup-home.sh ./
+RUN chown python:python ${HOME} -R
+RUN chmod -R ugo-x,u+rwX,go+rX,go-w ${HOME}
+USER python
 RUN ./setup-home.sh
 
 #RUN rm -rf /etc/update-motd.d /etc/motd /etc/motd.dynamic 
@@ -17,6 +20,10 @@ RUN ./setup-home.sh
 VOLUME ["/home/python/.pyenv"]
 USER root
 WORKDIR /
+RUN env
+#RUN chown python:python ${HOME} -R
+#RUN chmod -R ugo-x,u+rwX,go+rX,go-w ${HOME}
+
 RUN rm -rf /root/setup-*.sh /home/python/setup-*.sh
 
 
