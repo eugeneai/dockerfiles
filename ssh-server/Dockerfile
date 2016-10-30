@@ -4,7 +4,8 @@ FROM eugeneai/debug
 MAINTAINER Evgeny Cherkashin <eugeneai@irnok.net>
 ENV HOME /root
 
-RUN pacman -Sy openssh --needed --noconfirm procps iproute2 net-tools --needed --noconfirm
+RUN pacman -Sy openssh --needed --noconfirm procps iproute2 net-tools sudo --needed --noconfirm
+RUN echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 ADD . /build
 ADD ./services /services
