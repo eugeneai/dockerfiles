@@ -4,6 +4,7 @@
 # requires root
 export LC_ALL=C
 export LANG=C
+export CURRPWD=$PWD
 set -e
 set -o xtrace
 
@@ -108,6 +109,9 @@ echo 'en_US.UTF-8 UTF-8' > $ROOTFS/etc/locale.gen
 echo 'ru_RU.UTF-8 UTF-8' >> $ROOTFS/etc/locale.gen
 arch-chroot $ROOTFS locale-gen
 arch-chroot $ROOTFS /bin/sh -c 'echo $PACMAN_MIRRORLIST > /etc/pacman.d/mirrorlist'
+cp $CURRPWD/root-cache-clean.sh $ROOTFS/root
+chmod o+x $ROOTFS/root/root-*.sh
+arch-chroot $ROOTFS /bin/sh -c "/root/root-cache-clean.sh"
 
 # udev doesn't work in containers, rebuild /dev
 DEV=$ROOTFS/dev
