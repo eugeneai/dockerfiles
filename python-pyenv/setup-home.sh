@@ -3,7 +3,7 @@
 export TERM=xterm 
 #git clone https://github.com/yyuu/pyenv.git .pyenv
 
-yaourt -S pyenv --noconfirm --needed
+yaourt -S git pyenv --noconfirm --needed
 
 
 pyenv init
