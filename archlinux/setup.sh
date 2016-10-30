@@ -20,5 +20,6 @@ rm -rf /build
 #if [ -n "$REMOVABLES" ]; then
 #   pacman -Rns --noconfirm $REMOVABLES
 #fi
+/root/root-cache-clean.sh
 
 
