@@ -12,5 +12,6 @@ RUN sh /build/setup.sh
 
 ## Expose ports.
 EXPOSE 22
+CMD /services/sshd/run
 
 

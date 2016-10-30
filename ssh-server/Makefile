@@ -10,7 +10,7 @@ copy: $(RUNIT)/sshd/run
 	cp -rf $(RUNIT)/sshd/ ./services/ 
 	rm -rf ./services/sshd/{log,supervise}
 	
-docker: Dockerfile setup.sh
+docker: copy Dockerfile setup.sh
 	docker build -t "eugeneai/$(IMAGE)" .
 	
 clean:	
