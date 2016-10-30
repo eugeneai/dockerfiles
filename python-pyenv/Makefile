@@ -1,4 +1,4 @@
-.PHONY: all docker copy down
+.PHONY: all docker copy down test
 
 RUNIT=../runit-services/etc/sv
 IMAGENAME=python-pyenv
@@ -19,3 +19,7 @@ clean:
 	
 down:
 	docker rmi -f $(IMAGE)
+	
+test:
+	docker run -v $(PWD)/test:/home/python/.pyenv/virtualenvs -it $(IMAGE) /bin/bash
+	
