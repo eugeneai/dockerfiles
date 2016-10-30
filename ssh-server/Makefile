@@ -17,4 +17,4 @@ clean:
 	rm -rf ./services
 	
 test:	all
-	docker run --mac-address=90:90:90:90:90:90 eugeneai/ssh-server 
+	docker run --rm --mac-address=90:90:90:90:90:90 eugeneai/ssh-server 
