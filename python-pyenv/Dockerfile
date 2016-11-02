@@ -1,5 +1,5 @@
 ## Container for organize python pyenv environments
-FROM eugeneai/ssh-server
+FROM eugeneai/base-devel
 MAINTAINER Evgeny Cherkashin <eugeneai@irnok.net>
 WORKDIR /root
 ADD ./setup-user.sh ./
@@ -24,6 +24,7 @@ WORKDIR /
 #RUN chmod -R ugo-x,u+rwX,go+rX,go-w ${HOME}
 
 RUN rm -rf /root/setup-*.sh /home/python/setup-*.sh
+
 #USER python
 #WORKDIR ${HOME}
 

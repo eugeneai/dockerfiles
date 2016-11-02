@@ -15,4 +15,4 @@ RUN sh /build/setup.sh
 EXPOSE 22
 #CMD /services/sshd/run
 CMD ["/services/sshd/run"]
-
+RUN /root/root-cache-clean.sh

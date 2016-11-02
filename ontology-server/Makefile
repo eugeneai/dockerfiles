@@ -21,5 +21,5 @@ down:
 	docker rmi -f $(IMAGE)
 	
 test:
-	# docker run -d -v $(PWD)/test:/home/python/.pyenv/versions:rw -it $(IMAGE)
+	docker run -d -p 3030:3030 $(IMAGE)
 	
