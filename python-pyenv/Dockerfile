@@ -16,7 +16,7 @@ RUN /usr/bin/bash setup-home.sh
 #RUN rm -rf /etc/update-motd.d /etc/motd /etc/motd.dynamic 
 #RUN ln -fs /dev/null /run/motd.dynamic
 
-VOLUME ["/home/python/.pyenv/versions", "/home/python/.pyenv", "/home/python"]
+### VOLUME ["/home/python/.pyenv/versions", "/home/python/.pyenv", "/home/python"]
 USER root
 WORKDIR /
 #RUN env
@@ -27,4 +27,5 @@ RUN rm -rf /root/setup-*.sh /home/python/setup-*.sh
 
 #USER python
 #WORKDIR ${HOME}
+RUN /root/root-cache-clean.sh
 

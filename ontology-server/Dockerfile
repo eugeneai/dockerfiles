@@ -21,7 +21,7 @@ RUN git clone --recursive https://github.com/ClioPatria/ClioPatria.git
 # RUN git clone --recursive https://github.com/SWI-Prolog/pengines.git
 RUN echo
 RUN git clone https://github.com/eugeneai/ontology-server.git
-VOLUME ["/home/prolog/ontology-server/RDF-store","/home/prolog/ontology-server/data"]
+#### VOLUME ["/home/prolog/ontology-server/RDF-store","/home/prolog/ontology-server/data"]
 
 RUN chmod -R ugo-x,u+rwX,go+rX,go-w ${HOME}
 
