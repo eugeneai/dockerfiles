@@ -8,7 +8,8 @@ all: copy docker clean
 copy: $(RUNIT)/sshd/run
 	mkdir -p ./services
 	cp -r $(RUNIT)/sshd/ ./services/ 
-	rm -rf ./services/sshd/{log,supervise}
+	rm -rf ./services/sshd/supervise
+	rm -rf ./services/sshd/log
 	
 docker: Dockerfile setup.sh
 	docker build -t "eugeneai/$(IMAGE)" .
