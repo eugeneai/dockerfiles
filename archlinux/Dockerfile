@@ -1,5 +1,5 @@
 
-FROM kampka/archlinux
+FROM eugeneai/archlinux-base
 MAINTAINER Evgeny Cherkashin <eugeneai@irnok.net>
 
 ADD . /build

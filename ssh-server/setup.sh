@@ -30,5 +30,6 @@ touch /var/log/lastlog
 #rm -rf /services/sshd/supervise/
 
 ## Clean up
-pacman -Scc --noconfirm
+#pacman -Scc --noconfirm
 rm -rf /build
+/root/root-cache-clean.sh
