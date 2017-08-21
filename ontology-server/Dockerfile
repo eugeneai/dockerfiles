@@ -10,8 +10,11 @@ ENV HOME /home/prolog
 USER prolog
 WORKDIR ${HOME}
 
-RUN yaourt -Sy uuid --noconfirm --needed
+RUN echo
+# RUN yaourt -Sy uuid --noconfirm --needed
+RUN yaourt -Sy --noconfirm --needed
 RUN yaourt -S swi-prolog-devel --noconfirm --needed
+# RUN yaourt -S swi-prolog --noconfirm --needed
 
 RUN yaourt -S git screen --noconfirm --needed
 # RUN mkdir src && cd src
